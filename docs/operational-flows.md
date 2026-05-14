@@ -2,9 +2,11 @@
 
 These flows show how the current tools answer exchange integration workflows.
 
+Important: `juno-exchange-kit` is used here solely as a working demo/example. The commands show one composed flow across the lower-level tools; they should not be read as the required production service or ledger design.
+
 ## Local stack
 
-`juno-exchange-kit` can run the required local dependencies:
+For demos, `juno-exchange-kit` can run the local dependencies:
 
 ```sh
 make up
@@ -21,7 +23,7 @@ Default services:
 
 Use a separate `JUNO_EXCHANGE_KIT_DATA_DIR` per network. Reusing a regtest data dir on mainnet can produce regtest addresses while connected to mainnet.
 
-## Deposit address provisioning
+## Demo deposit address provisioning
 
 1. Initialize hot/cold wallets and scanner registration:
 
@@ -52,7 +54,7 @@ bin/juno-exchange-kit account deposit-address <account_id> --json
 curl -sS "http://127.0.0.1:18080/v1/wallets/hot/events?cursor=0&limit=100"
 ```
 
-3. Let `juno-exchange-kit` sync scanner events into local exchange accounting:
+3. Let the demo sync scanner events into its local exchange accounting:
 
 ```sh
 bin/juno-exchange-kit sync
@@ -63,17 +65,17 @@ bin/juno-exchange-kit daemon start
 5. Credit the user only on `DepositConfirmed`.
 6. Handle `DepositOrphaned` and `DepositUnconfirmed` as debit/reversal signals when they affect a previously credited deposit.
 
-`juno-exchange-kit` already follows this model: pending deposits are recorded immediately, but account credits increase only on confirmed deposits whose recovered `recipient_address` matches a known external deposit address.
+The demo follows this model: pending deposits are recorded immediately, but account credits increase only on confirmed deposits whose recovered `recipient_address` matches a known external deposit address.
 
 ## Balance reconciliation
 
-User balance:
+Demo user balance:
 
 ```sh
 bin/juno-exchange-kit account balance <account_id> --json
 ```
 
-Exchange balance:
+Demo exchange balance:
 
 ```sh
 bin/juno-exchange-kit balances
@@ -133,14 +135,14 @@ juno-broadcast submit --rpc-url "$JUNO_RPC_URL" --rpc-user "$JUNO_RPC_USER" --rp
 juno-broadcast status --rpc-url "$JUNO_RPC_URL" --rpc-user "$JUNO_RPC_USER" --rpc-pass "$JUNO_RPC_PASS" --txid <txid> --json
 ```
 
-`juno-exchange-kit` wraps this flow for exchange users:
+`juno-exchange-kit` wraps this flow for demo exchange users:
 
 ```sh
 bin/juno-exchange-kit withdraw --account <id> --to <j...> --amount-zat <n> --wait-confirmations 1 --json
 bin/juno-exchange-kit withdrawals list --account <id> --json
 ```
 
-## Hot and cold operations
+## Demo hot and cold operations
 
 Hot to cold sweep:
 
@@ -192,4 +194,3 @@ Do not key deposit finality only on first block inclusion. Consume scanner lifec
 - `OutgoingOutputExpired`
 
 Use cursor-based consumption. Filtering by `block_height` is documented for debug/audit use only because reorgs can move events across heights.
-

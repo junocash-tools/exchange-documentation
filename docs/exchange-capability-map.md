@@ -2,11 +2,13 @@
 
 This map answers the common exchange due-diligence questions using only currently represented Juno Cash tools.
 
+Important: `juno-exchange-kit` is solely a working demo/example harness. It is useful for showing how the lower-level tools can be composed, but it is not itself the production integration contract or a required exchange architecture.
+
 ## Wallet and address management
 
 ### Address and account generation
 
-`juno-exchange-kit` creates internal exchange accounts:
+In the demo, `juno-exchange-kit` creates internal exchange accounts:
 
 ```sh
 bin/juno-exchange-kit account create --json
@@ -30,7 +32,7 @@ juno-addrgen batch --ufvk <jview*1...> --start 0 --count 10 --json
 Address generation is deterministic:
 
 - `juno-addrgen`: UFVK + index gives the same address.
-- `juno-exchange-kit`: account deposit addresses are assigned by wallet, scope, and address index, then stored so the same account receives the same address.
+- `juno-exchange-kit`: demonstrates one way to assign account deposit addresses by wallet, scope, and address index, then store the mapping so the same demo account receives the same address.
 - Because Juno Cash recipient/value data is encrypted on-chain, exchanges must persist their deposit address or index to account mapping. They cannot rely on Bitcoin-style plaintext address matching.
 
 ### Address validation
@@ -71,7 +73,7 @@ Not part of the current model:
 
 ### HD wallet support
 
-The key library can derive UFVKs from seed material, coin type, and account using ZIP32-style Orchard derivation. `juno-exchange-kit init` creates local hot/cold seed files, derives hot/cold UFVKs, and stores wallet metadata.
+The key library can derive UFVKs from seed material, coin type, and account using ZIP32-style Orchard derivation. `juno-exchange-kit init` demonstrates this by creating local hot/cold seed files, deriving hot/cold UFVKs, and storing wallet metadata.
 
 The exchange-facing deposit derivation surface is still UFVK + scope + index. Treat seed files as signing material and keep them out of tracked content.
 
@@ -83,7 +85,7 @@ Juno Cash chain state is shielded note/nullifier based:
 - Spendable state is based on unspent Orchard notes.
 - Pending spend state is exposed through fields such as `pending_spent_txid`, `pending_spent_at`, and `pending_spent_expiry_height`.
 
-`juno-exchange-kit` adds an internal account ledger for exchange users:
+`juno-exchange-kit` adds a demo internal account ledger for exchange users:
 
 - `accounts`
 - `deposit_addresses`
@@ -91,7 +93,7 @@ Juno Cash chain state is shielded note/nullifier based:
 - `account_balances`
 - `withdrawals`
 
-So the integration model is: chain notes for assets/liquidity, internal account balances for exchange liabilities.
+So the demonstrated model is: chain notes for assets/liquidity, internal account balances for exchange liabilities. A production exchange can use a different internal ledger as long as it preserves the same chain-facing requirements.
 
 ## Balance management
 
@@ -99,7 +101,7 @@ So the integration model is: chain notes for assets/liquidity, internal account 
 
 Native JUNO is the only asset covered by the current exchange tools.
 
-Amounts are expressed in zatoshis (`zat`). User-facing formatting in `juno-exchange-kit` uses:
+Amounts are expressed in zatoshis (`zat`). User-facing formatting in the demo uses:
 
 ```text
 1 JUNO = 100,000,000 zat
@@ -112,7 +114,7 @@ bin/juno-exchange-kit account balance <account_id>
 bin/juno-exchange-kit account balance <account_id> --json
 ```
 
-Exchange aggregate view:
+Demo exchange aggregate view:
 
 ```sh
 bin/juno-exchange-kit balances
@@ -127,7 +129,7 @@ bin/juno-exchange-kit wallet balance cold
 
 ### Available, pending, and locked balances
 
-The current exchange harness separates:
+The demo harness separates:
 
 - `balance_zat`: confirmed credited account liability.
 - `pending_deposits_zat`: detected but not yet credited deposit amount.
@@ -136,7 +138,7 @@ The current exchange harness separates:
 - `equity_zat`: assets minus confirmed liabilities.
 - `equity_total_zat`: assets minus confirmed and pending liabilities.
 
-For withdrawal debits, `juno-exchange-kit` checks account balance before building/broadcasting and records withdrawals after broadcast.
+For withdrawal debits, `juno-exchange-kit` demonstrates checking account balance before building/broadcasting and recording withdrawals after broadcast.
 
 The current docs do not define staking, frozen balances, or exchange-side locked balance buckets beyond pending deposits and withdrawal debiting.
 
@@ -289,7 +291,7 @@ Supported alternatives:
 - `DepositOrphaned`: original block orphaned by reorg.
 - `DepositUnconfirmed`: previously confirmed deposit fell below threshold after rollback.
 
-Default confirmation threshold is `100`. `juno-exchange-kit` defaults regtest to `1` and non-regtest networks to `100` in its Docker stack.
+Default confirmation threshold is `100`. The `juno-exchange-kit` demo stack defaults regtest to `1` and non-regtest networks to `100`.
 
 Finality is operationally modeled by configured confirmation threshold plus reorg event handling. Consumers should process `*Orphaned` and `*Unconfirmed` events rather than treating block inclusion as irreversible.
 
@@ -365,6 +367,5 @@ Rate limits:
 
 Testnet:
 
-- `juno-exchange-kit` Docker workflows support `regtest`, `testnet`, and `mainnet`.
+- `juno-exchange-kit` demo Docker workflows support `regtest`, `testnet`, and `mainnet`.
 - Address validators and address derivation support mainnet, testnet, and regtest HRPs.
-

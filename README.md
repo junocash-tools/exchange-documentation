@@ -4,7 +4,7 @@ This repo collects the exchange-facing answers exposed by the local Juno Cash to
 
 It is a documentation layer over the implementation repos, not a separate SDK or service. The source tools are:
 
-- [`juno-exchange-kit`](../juno-exchange-kit/README.md): end-to-end exchange harness for accounts, deposit addresses, deposits, balances, withdrawals, hot/cold sweeps, and local regtest/testnet/mainnet dependency stacks.
+- [`juno-exchange-kit`](../juno-exchange-kit/README.md): working demo/example harness only. It shows one possible exchange integration shape for accounts, deposit addresses, deposits, balances, withdrawals, hot/cold sweeps, and local regtest/testnet/mainnet dependency stacks; it is not the production integration contract.
 - [`juno-addrgen`](../juno-addrgen/README.md): offline UFVK + index address derivation.
 - [`juno-address-validators`](../juno-address-validators/README.md): Java and JavaScript/TypeScript address validators.
 - [`juno-txbuild`](../juno-txbuild/README.md): online `TxPlan` builder for offline signing.
@@ -17,11 +17,11 @@ It is a documentation layer over the implementation repos, not a separate SDK or
 
 | Area | Current answer |
 | --- | --- |
-| Wallet and address management | Supported through UFVK-based deterministic Orchard unified address derivation. Exchange accounts are internal records in `juno-exchange-kit`; each account gets a stable external deposit address from the hot wallet UFVK and an address index. |
+| Wallet and address management | Supported through UFVK-based deterministic Orchard unified address derivation. `juno-exchange-kit` demonstrates one sample internal-account mapping; production exchanges should treat it as an example, not as a required account model. |
 | Address validation | Supported in Java and JavaScript/TypeScript. Validators support mainnet `j`, testnet `jtest`, and regtest `jregtest` unified address HRPs. |
 | Memo/tag/payment-id | Orchard memo is supported as optional `memo_hex`, up to 512 bytes. There is no destination tag or payment-id model in these tools. |
 | HD wallet support | The key library derives UFVKs from seed, coin type, and account using ZIP32-style Orchard key derivation. The exchange-facing address derivation API is UFVK + scope + index. |
-| Account or UTXO model | Chain state is shielded note/nullifier based, closer to a UTXO model than an account model. `juno-exchange-kit` adds an internal exchange account ledger on top. |
+| Account or UTXO model | Chain state is shielded note/nullifier based, closer to a UTXO model than an account model. `juno-exchange-kit` adds a demo internal account ledger on top to illustrate exchange accounting. |
 | Balances | Native JUNO only. Amounts are represented in zatoshis (`zat`), with 100,000,000 zat per JUNO. User liabilities are confirmed balances; pending deposits are shown separately. Hot/cold wallet balances are separate liquidity views. |
 | Assets/tokens/NFTs | Not covered by the current toolchain. The docs and schemas are native-asset Juno Cash only. |
 | Transaction lifecycle | Build `TxPlan` online with `juno-txbuild`, sign offline with `juno-txsign`, then submit/status with `juno-broadcast`. The signer returns txid before broadcast. |
@@ -40,4 +40,3 @@ It is a documentation layer over the implementation repos, not a separate SDK or
 ## Source-of-truth rule
 
 When this repo disagrees with a tool repo, the implementation repo wins. Update this documentation from the current local tool README, OpenAPI, schema, and code before using it for integration signoff.
-

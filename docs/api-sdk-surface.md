@@ -244,7 +244,7 @@ No built-in rate limits are documented for `juno-scan` or `juno-broadcast`. If t
 
 ## Network availability
 
-The local exchange stack supports:
+The demo local stack supports:
 
 - Regtest.
 - Testnet.
@@ -257,4 +257,3 @@ Address tooling supports:
 - Regtest HRP `jregtest`.
 
 Use separate data directories per network.
-
