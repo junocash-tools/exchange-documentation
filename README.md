@@ -22,7 +22,7 @@ It is a documentation layer over the implementation repos, not a separate SDK or
 | Memo/tag/payment-id | Orchard memo is supported as optional `memo_hex`, up to 512 bytes. There is no destination tag or payment-id model in these tools. |
 | HD wallet support | The key library derives UFVKs from seed, coin type, and account using ZIP32-style Orchard key derivation. The exchange-facing address derivation API is UFVK + scope + index. |
 | Account or UTXO model | Chain state is shielded note/nullifier based, closer to a UTXO model than an account model. `juno-exchange-kit` adds a demo internal account ledger on top to illustrate exchange accounting. |
-| Balances | Native JUNO only. Amounts are represented in zatoshis (`zat`), with 100,000,000 zat per JUNO. User liabilities are confirmed balances; pending deposits are shown separately. Hot/cold wallet balances are separate liquidity views. |
+| Balances | Native JUNO only. Amounts are represented in monetas (`zat`), with 100,000,000 zat per JUNO. User liabilities are confirmed balances; pending deposits are shown separately. Hot/cold wallet balances are separate liquidity views. |
 | Assets/tokens/NFTs | Not covered by the current toolchain. The docs and schemas are native-asset Juno Cash only. |
 | Transaction lifecycle | Build `TxPlan` online with `juno-txbuild`, sign offline with `juno-txsign`, then submit/status with `juno-broadcast`. The signer returns txid before broadcast. |
 | Nonce/sequence/replacement | No account nonce flow. Spending is by Orchard notes/nullifiers plus `expiry_height`. Current docs state no replacement/RBF and no CPFP fee bump for Orchard spends. |

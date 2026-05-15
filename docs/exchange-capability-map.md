@@ -101,7 +101,7 @@ So the demonstrated model is: chain notes for assets/liquidity, internal account
 
 Native JUNO is the only asset covered by the current exchange tools.
 
-Amounts are expressed in zatoshis (`zat`). User-facing formatting in the demo uses:
+Amounts are expressed in monetas (`zat`). User-facing formatting in the demo uses:
 
 ```text
 1 JUNO = 100,000,000 zat
